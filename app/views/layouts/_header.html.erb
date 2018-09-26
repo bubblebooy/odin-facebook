@@ -1,0 +1,51 @@
+<nav class="navbar fixed-top navbar-expand-md navbar-light bg-light">
+  <div class="container">
+    <%# <h1 class="nav navbar-brand"> Facebook </h1>  id="logo" %>
+    <%= link_to "Facebook", root_path , :class => "navbar-brand"%>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav ml-auto">
+        <% if user_signed_in? %>
+
+
+              <li class="nav-item "><%= link_to current_user.name ,  current_user, class: "nav-link active" %></li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"> Notifications</a>
+                <ul class="dropdown-menu">
+                  <% if notifications.empty? %>
+                    <li>No Notifications</li>
+                  <% end %>
+                  <% notifications.each do |notification| %>
+                    <li>
+                      <%= link_to "#{notification.user.name} has requested to be your friend", notification.user %>
+                    </li>
+                    <% end %>
+                </ul>
+              </li>
+              <li >  <%= link_to "Log out", destroy_user_session_path, method: :delete , class: "btn btn-outline-primary"%> </li>
+
+        <% else %>
+
+            <%= form_for(:user, url: session_path(:user), :html => {:class => "form-inline my-2 my-md-0"}) do |f| %>
+              <div class="form-group">
+                <%= f.text_field :email , :class => "form-control mr-sm-2" , placeholder: "Enter Email" %>
+              </div>
+              <div class="form-group">
+                <%= f.password_field :password , :class => "form-control mr-sm-2" , placeholder: "Enter Password"%>
+              </div>
+                <%= f.hidden_field :remember_me , :value => "1"%>
+                <%#= f.label :remember_me%>
+                <%= f.submit 'Log in' , :class => "form-control mr-sm-2"%>
+              <%#=   link_to "Forgot your password?", new_password_path(:user) %>
+            <% end -%>
+        <% end %>
+      </ul>
+    </div>
+
+
+
+
+  </div>
+</nav>

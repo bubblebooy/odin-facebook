@@ -1,0 +1,20 @@
+
+<li class="list-group-item p-0 m-2">
+  <%= content_tag(:nav, :class => "navbar navbar-expand-sm navbar-dark #{current_user == comment.user ? "bg-dark" : "bg-secondary"}") do %>
+
+
+    <%= link_to comment.user.name , user_path(comment.user) , :class => "navbar-brand"%>
+
+    <div class="navbar-nav">
+      <% if current_user == comment.user || current_user.admin? %>
+        <%#= link_to 'Edit', edit_comment_path(comment), class:"nav-link"%>
+        <%= link_to 'Delete', comment, method: :delete, data: { confirm: 'Are you sure?' }, class:"nav-link" %>
+      <% end %>
+    </div>
+    <span class= "navbar-text ml-auto"> <%= time_ago_in_words(comment.created_at)%> ago </span>
+  <% end %>
+  <div class="container pt-4">
+    <p> <%= comment.content %></div> </p>
+
+
+</li>

@@ -1,5 +1,3 @@
-<p id="notice"><%= notice %></p>
-
 <p>
   <strong>Name:</strong>
   <%= @user.name %>
@@ -10,5 +8,30 @@
   <%= @user.email %>
 </p>
 
-<%= link_to 'Edit', edit_user_path(@user) %> |
-<%= link_to 'Back', users_path %>
+<% if current_user == @user || current_user.admin? %>
+  <%= link_to 'Edit', edit_user_path(@user) %>
+<% end %>
+
+<br><br>
+
+<% if @user.friends.find_by(id: current_user) %>
+  <% friendship = Friendship.where(user_id:@user).find_by(friend_id:current_user)  %>
+  <% if friendship.pending? %>
+    <div>
+      <%= link_to "Accept Friend Request", friendship_path, method: :patch, :class => "btn btn-primary"%>
+      <%= link_to "Decline Friend Request", friendship_path, method: :delete, :class => "btn btn-primary"%>
+    </div>
+  <% else %>
+    <div>
+      <%= link_to "Unfriend", friendship_path, method: :delete, :class => "btn btn-primary"%>
+    </div>
+  <% end %>
+<% elsif @user != current_user %>
+  <div>
+    <%= link_to 'Send Friend Request', friendships_path(friend_id:@user), method: :post, :class => "btn btn-primary"%>
+  </div>
+<% end %>
+
+<br>
+
+<%= render @posts %>

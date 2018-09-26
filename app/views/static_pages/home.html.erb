@@ -1,2 +1,55 @@
-<h1>StaticPages#home</h1>
-<p>Find me in app/views/static_pages/home.html.erb</p>
+<% if !user_signed_in? %>
+  <div class="row">
+    <div class="col-md-6">
+      <h1>Facebook</h1>
+      <p> Give us all your informating </p>
+      <p>Totaly Not Evil</p>
+    </div>
+    <div class="col-md-6">
+
+    <%= form_for(:user, url: registration_path(:user), :html => {:class => ""}) do |f| %>
+      <div class="form-group">
+        <%= f.label :name %>
+        <%= f.text_field :name , :class => "form-control" , placeholder: "Name" %>
+      </div>
+      <div class="form-group">
+        <%= f.label :email %>
+        <%= f.text_field :email , :class => "form-control" , placeholder: "Enter Email" %>
+      </div>
+      <div class="form-group">
+        <%= f.label :password %>
+        <%= f.password_field :password , :class => "form-control" , placeholder: "Enter Password"%>
+      </div>
+      <div class="form-group">
+        <%= f.label :password_confirmation %>
+        <%= f.password_field :password_confirmation, :class => "form-control", placeholder: "Confirm Password" %>
+      </div>
+
+        <%= f.submit 'Sign Up' , :class => "form-control btn btn-primary"%>
+
+    <% end -%>
+    </div>
+  </div>
+  <% else %>
+
+  <div class="row">
+    <div class="col-md-8">
+      <h1>Posts</h1>
+      <%= render 'posts/form', post: @post %>
+      <%#= will_paginate @posts , param_name: 'post_page', :renderer => WillPaginate::ActionView::Bootstrap4LinkRenderer, class: "pt-2"%>
+      <%= render @posts %>
+      <%= will_paginate @posts , param_name: 'posts_page', :renderer => WillPaginate::ActionView::Bootstrap4LinkRenderer%>
+    </div>
+    <div class="col-md-4">
+      <h2>Friends</h2>
+      <div class="list-group-flush">
+        <% @friends.each do |friend| %>
+          <%= link_to friend.name, user_path(friend.id), class: "list-group-item list-group-item-action" %>
+        <% end %>
+        <%= link_to "All Users", users_path, class: "list-group-item list-group-item-action list-group-item-secondary" %>
+        <%= will_paginate @friends , param_name: 'friends_page', :renderer => WillPaginate::ActionView::Bootstrap4LinkRenderer%>
+      </div>
+    </div>
+  </div>
+
+<% end %>

@@ -5,3 +5,59 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+
+
+User.create!(name:  "Example User",
+             email: "example@railstutorial.org",
+             password:              "foobar",
+             password_confirmation: "foobar",
+             role: 1)
+
+User.create!(name:  "Artifact",
+            email: "modify@beta.key",
+            password:              "123456",
+            password_confirmation: "123456",
+            role: 1)
+
+99.times do |n|
+  name  = Faker::Name.name
+  email = "faker-#{n+1}@railstutorial.org"
+  password = "password"
+  User.create!(name:  name,
+               email: email,
+               password:              password,
+               password_confirmation: password,
+               created_at: rand(10000).minutes.ago)
+end
+
+
+
+users = User.order(:created_at).take(6)
+15.times do
+  content = Faker::Lorem.sentence(rand(5..20))
+  users.each { |user| user.posts.create!(content: content, created_at: rand(Time.now.to_i-user.created_at.to_i).seconds.ago ) }
+  users.each do |user|
+    friend = User.find(User.pluck(:id).sample)
+    user.friendships.find_or_initialize_by(friend_id: friend.id).confirmed!
+    friend.friendships.find_or_initialize_by(friend_id: user.id).confirmed!
+  end
+end
+
+posts = Post.order(:created_at).take(6)
+10.times do
+  content = Faker::Lorem.sentence(rand(3..10))
+  posts.each do |post|
+
+    commenter = User.find(User.pluck(:id).sample)
+    post.comments.create!(content: content, user_id: commenter.id, created_at: rand(Time.now.to_i-post.created_at.to_i).seconds.ago)
+  end
+end
+
+
+
+# users = User.all
+# user = users.first
+# following = users[2..50]
+# followers = users[3..40]
+# following.each { |followed| user.follow(followed)}
+# followers.each { |follower| follower.follow(user)}

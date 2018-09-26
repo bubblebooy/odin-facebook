@@ -1,0 +1,43 @@
+
+<li class="list-group-item p-0 m-2">
+  <%= content_tag(:nav, :class => "navbar navbar-expand-sm navbar-dark #{current_user == post.user ? "bg-dark" : "bg-secondary"}") do %>
+
+
+    <%= link_to post.user.name , user_path(post.user) , :class => "navbar-brand"%>
+    <% if post.likes.find_by(user: current_user) %>
+      <% fill_color = "pink" %>
+      <% method = :delete %>
+      <% path = like_path(id: post.id) %>
+    <% else %>
+      <% fill_color = "none" %>
+      <% method = :post %>
+      <% path = likes_path(id: post.id) %>
+    <% end %>
+
+    <%= link_to octicon("heart", stroke: "pink", fill: fill_color,  "stroke-width": "2" , height: 32, class: "pr-1 pl-1"),
+            path, method: method, :class => "navbar-link"%>
+    <% if post.likes.count != 0 %>
+      <span class="navbar-text pl-1 pr-4">  <%= post.likes.count %> </span>
+    <% end %>
+    <div class="navbar-nav">
+      <% if current_user == post.user || current_user.admin? %>
+        <%= link_to 'Edit', edit_post_path(post), class:"nav-link"%>
+        <%= link_to 'Delete', post, method: :delete, data: { confirm: 'Are you sure?' }, class:"nav-link" %>
+      <% end %>
+    </div>
+    <span class= "navbar-text ml-auto"> <%= time_ago_in_words(post.created_at)%> ago </span>
+  <% end %>
+  <div class="container pt-4">
+    <p> <%= post.content %></div> </p>
+    <div class="container bg-light pt-4 pb-2">
+      <%= render 'comments/form', comment: post.comments.build, post: post %>
+      <ul>
+        <% comments = post.comments.all.paginate(page: params["comments_#{post.id}_page"], per_page: 3)%>
+        <%= render comments%>
+        <%= will_paginate comments , param_name: "comments_#{post.id}_page", :renderer => WillPaginate::ActionView::Bootstrap4LinkRenderer, class: "pagination-sm"%>
+      </ul>
+
+    </div>
+
+
+</li>
