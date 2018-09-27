@@ -3,7 +3,8 @@ Rails.application.routes.draw do
 
 
   # get 'friendships/accept', as: 'accept_friend_request'
-  devise_for :users, controllers: { registrations: 'users/registrations'  }
+  devise_for :users, controllers: { registrations: 'users/registrations'  }, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
+  
   get 'static_pages/home', as: 'home'
   authenticate :user do
     resources :likes, only: [:create, :destroy]
